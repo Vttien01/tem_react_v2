@@ -81,6 +81,7 @@
     "modules.news.category.CategorySavePage.newsCategory": "Danh mục tin tức",
     "modules.news.category.index.home": "Trang chủ",
     "modules.news.category.index.newsCategory": "Danh mục tin tức",
+    "modules.news.categoryDemo.index.newsCategoryDemo": "Danh mục tin tức Demo",
     "modules.news.index.1001853751": "Ghim lên đầu",
     "modules.news.index.1124600214": "Tiêu đề",
     "modules.news.index.1755013298": "Danh mục",
@@ -135,5 +136,7 @@
     "constants.menuConfig.2322824391": "Quản lý tin tức",
     "constants.menuConfig.3834517896": "Tin tức",
     "constants.menuConfig.4081709562": "Quản lý hệ thống",
-    "components.common.page.category.index.objectName": "danh mục"
+    "components.common.page.category.index.objectName": "danh mục",
+    "constants.menuConfig.2588937": "Danh mục tin tức mẫu"
+
 }

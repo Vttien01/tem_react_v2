@@ -1,9 +1,10 @@
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Avatar, Button, Modal, Tag } from 'antd';
+import { Avatar, Tag, Modal, Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 import BaseTable from '@components/common/table/BaseTable';
-
+import { EyeOutlined } from '@ant-design/icons';
+import styles from '../index.module.scss';
 import { UserOutlined } from '@ant-design/icons';
 import { AppConstants, categoryKind, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
 import PageWrapper from '@components/common/layout/PageWrapper';
@@ -11,28 +12,29 @@ import ListPage from '@components/common/layout/ListPage';
 import useFetch from '@hooks/useFetch';
 import { FieldTypes } from '@constants/formConfig';
 import useTranslate from '@hooks/useTranslate';
-import { statusOptions } from '@constants/masterData';
-import { EyeOutlined } from '@ant-design/icons';
-import useNotification from '@hooks/useNotification';
-import styles from './index.module.scss';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { IconPinnedOff, IconPin } from '@tabler/icons-react';
+import useNotification from '@hooks/useNotification';
+import { useNavigate } from 'react-router-dom';
 
 const message = defineMessages({
     objectName: 'news',
     previewFailed: 'Preview failed',
     title: 'Title',
     category: 'Category',
+    categoryImage: 'Cat Image',
     status: 'Status',
     home: 'Home',
     news: 'News',
 });
 
-const NewsListPage = () => {
+
+function NewsClone() {
     const translate = useTranslate();
     const notification = useNotification();
-    const statusValues = translate.formatKeys(statusOptions, [ 'label' ]);
     const [ showPreviewModal, setShowPreviewModal ] = useState(false);
+    const navigate = useNavigate(); // Sử dụng useNavigate để tạo hàm navigate
+
     const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.news.update);
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
@@ -55,7 +57,8 @@ const NewsListPage = () => {
                     <Button
                         type="link"
                         style={{ padding: 0 }}
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.stopPropagation(),
                             executeGetNews({
                                 pathParams: {
                                     id,
@@ -79,7 +82,7 @@ const NewsListPage = () => {
         data: newsContent,
     } = useFetch(apiConfig.news.getById, {
         immediate: false,
-        mappingData: ({ data }) => data.content,
+        mappingData: ({ data }) => data,
     });
 
     const {
@@ -88,7 +91,8 @@ const NewsListPage = () => {
         execute: executeGetCategories,
     } = useFetch(apiConfig.category.autocomplete, {
         immediate: false,
-        mappingData: ({ data }) => data.data.map((item) => ({ value: String(item.id), label: item.categoryName })),
+        mappingData: ({ data }) => data.data.map((item) => ({ value: String(item.id), label: item.categoryName, image: item.categoryImage })),
+
     });
 
     const handleUpdatePinTop = (item) => {
@@ -161,12 +165,6 @@ const NewsListPage = () => {
             type: FieldTypes.SELECT,
             options: categories,
         },
-        {
-            key: 'status',
-            placeholder: translate.formatMessage(message.status),
-            type: FieldTypes.SELECT,
-            options: statusValues,
-        },
     ];
 
     useEffect(() => {
@@ -177,9 +175,16 @@ const NewsListPage = () => {
         });
     }, []);
 
+
+    const handleRowDoubleClick = (record) => {
+        return {
+            onClick: () => {
+                navigate(`./${record.id}`);
+            },
+        };
+    };
     return (
         <PageWrapper
-            loading={getNewsLoading}
             routes={[
                 { breadcrumbName: translate.formatMessage(message.home) },
                 { breadcrumbName: translate.formatMessage(message.news) },
@@ -190,28 +195,28 @@ const NewsListPage = () => {
                 actionBar={mixinFuncs.renderActionBar()}
                 baseTable={
                     <BaseTable
+                        onClickRow={handleRowDoubleClick}
                         onChange={mixinFuncs.changePagination}
                         columns={columns}
                         dataSource={data}
-                        loading={loading || getCategoriesLoading || updateNewsPinLoading}
+                        loading={loading || getCategoriesLoading || updateNewsPinLoading || getNewsLoading}
                         pagination={pagination}
                     />
                 }
             />
             <Modal
-                title={<FormattedMessage defaultMessage="Preview" />}
-                width={1000}
+                title={newsContent ? newsContent.title : <FormattedMessage defaultMessage="Preview" />}
                 open={showPreviewModal}
+                width={1000}
                 footer={null}
-                centered
                 onCancel={() => setShowPreviewModal(false)}
+                centered
             >
                 {newsContent && (
-                    <div className={styles.previewContent} dangerouslySetInnerHTML={{ __html: newsContent }}></div>
+                    <div className={styles.previewContent} dangerouslySetInnerHTML={{__html: newsContent.content }}></div>
                 )}
             </Modal>
         </PageWrapper>
     );
-};
-
-export default NewsListPage;
+}
+export default NewsClone;

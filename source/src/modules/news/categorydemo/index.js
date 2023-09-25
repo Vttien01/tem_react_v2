@@ -1,26 +1,27 @@
 import React from 'react';
 
-import { categoryKind } from '@constants';
-import CategoryListPageCommon from '@components/common/page/category';
+import CategoryListPageCommonDemo from "@components/common/page/categoryDemo";
+
 import { defineMessages, useIntl } from 'react-intl';
+import routes from '../routes';
 
 const message = defineMessages({
     home: 'Home',
-    newsCategory: 'News Category Demo',
+    newsCategoryDemo: 'News Category Demo',
 });
 
-const CategoryListPage = () => {
+const CategoryListPageDemo = () => {
     const intl = useIntl();
 
     return (
-        <CategoryListPageCommon
-            routes={[
+        <CategoryListPageCommonDemo 
+            routes = {[
                 { breadcrumbName: intl.formatMessage(message.home) },
-                { breadcrumbName: intl.formatMessage(message.newsCategory) },
+                { breadcrumbName: intl.formatMessage(message.newsCategoryDemo),
+                    path: routes.newsCategoryListPageDemo.path,
+                },
             ]}
-            kind={categoryKind.news}
         />
     );
 };
-
-export default CategoryListPage;
+export default CategoryListPageDemo; 

@@ -1,23 +1,22 @@
+import React, { useEffect } from 'react';
+import BaseTable from '@components/common/table/BaseTable';
+import { AppConstants, DEFAULT_TABLE_ITEM_SIZE, categoryKind } from '@constants';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Avatar,Tag } from 'antd';
-import React from 'react';
-import BaseTable from '@components/common/table/BaseTable';
-
+import useTranslate from '@hooks/useTranslate';
 import { UserOutlined } from '@ant-design/icons';
-import { AppConstants, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
+import { Avatar } from 'antd';
+import { Tag } from 'antd';
 import PageWrapper from '@components/common/layout/PageWrapper';
 import ListPage from '@components/common/layout/ListPage';
-import useTranslate from '@hooks/useTranslate';
 import { defineMessages } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
+import useFetch from '@hooks/useFetch';
+import { useLocation } from 'react-router-dom';
 
 const message = defineMessages({
     objectName: 'category',
     name: 'Name',
-    createdDate: 'Created date',
-    currentDate: 'Current Date',
-    createdBy: 'Created By'
-
 });
 
 const CategoryListPageCommon = ({ routes, kind }) => {
@@ -65,19 +64,6 @@ const CategoryListPageCommon = ({ routes, kind }) => {
         },
         { title: translate.formatMessage(message.name), dataIndex: 'categoryName' },
         mixinFuncs.renderActionColumn({ edit: true, delete: true }, { width: '90px' }),
-        {
-            title: translate.formatMessage(message.createdDate),
-            dataIndex: 'createdDate',
-            width: '80px',
-            // render: (createdDate) => convertUtcToTimezone(createdDate),
-        },
-        {
-            title: translate.formatMessage(message.createdBy), // Tiêu đề cho trường ngày hiện tại
-            dataIndex: 'createdBy', // Tên của trường ngày hiện tại
-            width: '80px', // Độ rộng của cột
-        },
-        mixinFuncs.renderStatusColumn({ width: '90px' }),
-
     ];
 
     const searchFields = [

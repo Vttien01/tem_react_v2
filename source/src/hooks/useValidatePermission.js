@@ -6,7 +6,7 @@ function useValidatePermission() {
     const { permissions, kind, profile } = useAuth();
 
     const hasPermission = useCallback(
-        (requiredPermissions, requiredKind, excludeKind, onValidate = validatePermission) => {
+        (requiredPermissions, requiredKind, excludeKind, onValidate, path, separate) => {
             const _onValidate = onValidate ?? validatePermission;
             return _onValidate(
                 requiredPermissions,
@@ -14,7 +14,9 @@ function useValidatePermission() {
                 requiredKind,
                 excludeKind,
                 kind,
-                profile
+                profile,
+                path,
+                separate
             );
         },
         [permissions, kind]

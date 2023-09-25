@@ -29,7 +29,7 @@ const notificationMessage = defineMessages({
 const defineStatusMessage = defineMessages({
     active: 'Active',
     pending: 'Pending',
-    inactive:  'Lock',
+    inactive: 'Lock',
 });
 
 const statusMessage = {
@@ -228,7 +228,8 @@ const useListBase = ({
 
     const actionColumnButtons = (additionalButtons = {}) => ({
         delete: ({ id, buttonProps }) => {
-            if (!options?.excludePermissions?.delete && !mixinFuncs.hasPermission(apiConfig.delete?.baseURL)) return null;
+            if (!options?.excludePermissions?.delete && !mixinFuncs.hasPermission(apiConfig.delete?.baseURL))
+                return null;
 
             return (
                 <Button
@@ -354,9 +355,7 @@ const useListBase = ({
             ...columnsProps,
             render: (status) => (
                 <Tag color={commonStatusColor[status]}>
-                    <div style={{ padding: '0 4px', fontSize: 14 }}>
-                        {intl.formatMessage(statusMessage[status])}
-                    </div>
+                    <div style={{ padding: '0 4px', fontSize: 14 }}>{intl.formatMessage(statusMessage[status])}</div>
                 </Tag>
             ),
         };
