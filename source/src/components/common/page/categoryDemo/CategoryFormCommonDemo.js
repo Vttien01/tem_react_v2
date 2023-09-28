@@ -11,14 +11,14 @@ import useTranslate from '@hooks/useTranslate';
 import { statusOptions } from '@constants/masterData';
 import { FormattedMessage } from 'react-intl';
 
-const CategoryFormCommon = (props) => {
-    const { formId, actions, dataDetail, onSubmit, setIsChangedFormValues } = props;
+const CategoryFormCommonDemo = (props) => {
+    const { parentId,formId, actions, dataDetail, onSubmit, setIsChangedFormValues } = props;
     const { execute: executeUpFile } = useFetch(apiConfig.file.upload);
     const [imageUrl, setImageUrl] = useState(null);
     const translate = useTranslate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
 
-    console.log(dataDetail);
+    // console.log(categories);
     const { form, mixinFuncs, onValuesChange } = useBasicForm({
         onSubmit,
         setIsChangedFormValues,
@@ -43,7 +43,7 @@ const CategoryFormCommon = (props) => {
     };
 
     const handleSubmit = (values) => {
-        return mixinFuncs.handleSubmit({ ...values, categoryImage: imageUrl });
+        return mixinFuncs.handleSubmit({ ...values, categoryImage: imageUrl,parentId: parentId });
     };
 
     useEffect(() => {
@@ -74,7 +74,10 @@ const CategoryFormCommon = (props) => {
                     <Col span={12}>
                         <TextField required label={<FormattedMessage defaultMessage="Name" />} name="categoryName" />
                     </Col>
-                    <Col span={12}>
+                </Row>
+                
+                <Row>
+                    <Col span={24}>
                         <TextField
                             required
                             label={<FormattedMessage defaultMessage="Description" />}
@@ -90,4 +93,4 @@ const CategoryFormCommon = (props) => {
     );
 };
 
-export default CategoryFormCommon;
+export default CategoryFormCommonDemo;

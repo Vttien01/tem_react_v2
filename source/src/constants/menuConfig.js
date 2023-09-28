@@ -35,9 +35,9 @@ const navMenuConfig = [
                 permission: [apiConfig.news.getList.baseURL],
             },
             {
-                label: <FormattedMessage  defaultMessage='News 2'/>,
-                key: 'news-list-demo',
-                path: routes.newsListPageDemo.path,
+                label: <FormattedMessage defaultMessage='News Clone' />,
+                key: 'News-list-clone',
+                path: routes.newsListPageClone.path,
                 permission: [apiConfig.news.getList.baseURL],
             },
             {
@@ -47,11 +47,11 @@ const navMenuConfig = [
                 permission: [apiConfig.category.getList.baseURL],
             },
             {
-                label: <FormattedMessage  defaultMessage='News category Demo'/>,
+                label: <FormattedMessage defaultMessage='News category demo'/>,
                 key: 'news-category-demo',
-                path: routes.newsCategorySavePageDemo.path,
+                path: routes.newsCategoryListPageDemo.path,
                 permission: [apiConfig.category.getList.baseURL],
-            },
+            }
         ],
     },
     {

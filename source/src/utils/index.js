@@ -10,14 +10,14 @@ export const convertGlobImportToObject = (modules) =>
                 ...rs,
                 [cur.default.name]: cur.default,
             }),
-            {},
+            {}
         );
 
 export const convertGlobImportToArray = (modules) =>
     modules.filter((module) => !!module.default).map((module) => module.default);
 
 export const destructCamelCaseString = (string) => {
-    const arrString = [ ...string ];
+    const arrString = [...string];
     const newArrString = [];
     arrString.forEach((char, index) => {
         if (char.charCodeAt(0) > 90) {
@@ -137,6 +137,9 @@ export const validatePermission = (
     requiredKind,
     excludeKind = [],
     userKind,
+    profile,
+    path,
+    separate
 ) => {
     if (ensureArray(excludeKind).length > 0) {
         if (ensureArray(excludeKind).some((kind) => kind == userKind)) return false;
@@ -145,6 +148,11 @@ export const validatePermission = (
         if (requiredKind !== userKind) return false;
     }
     if (!requiredPermissions || requiredPermissions?.length == 0) return true;
-
-    return removePathParams(requiredPermissions).every((item) => userPermissions?.includes(item?.replace(apiUrl, '/')));
+    let permissionsSavePage = [];
+    if (separate && requiredPermissions.length > 0) {
+        permissionsSavePage.push(path?.type === 'create' ? requiredPermissions[0] : requiredPermissions[1]);
+    } else {
+        permissionsSavePage = requiredPermissions;
+    }
+    return removePathParams(permissionsSavePage).every((item) => userPermissions?.includes(item?.replace(apiUrl, '/')));
 };

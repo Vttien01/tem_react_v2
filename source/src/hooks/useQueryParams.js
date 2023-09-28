@@ -3,7 +3,6 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 const useQueryParams = () => {
     let [ searchParams, setSearchParams ] = useSearchParams();
-
     // return a URLSearchParams object
     const serializeParams = (object = {}) => {
         const params = new URLSearchParams();

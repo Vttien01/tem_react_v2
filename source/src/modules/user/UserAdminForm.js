@@ -26,7 +26,7 @@ const message = defineMessages({
 
 const UserAdminForm = (props) => {
     const translate = useTranslate();
-    const { formId, actions, dataDetail, onSubmit, setIsChangedFormValues, groups, branchs, isEditing } = props;
+    const { isError,formId, actions, dataDetail, onSubmit, setIsChangedFormValues, groups, branchs, isEditing } = props;
     const { execute: executeUpFile } = useFetch(apiConfig.file.upload);
     const [imageUrl, setImageUrl] = useState(null);
 
@@ -63,7 +63,6 @@ const UserAdminForm = (props) => {
         });
         setImageUrl(dataDetail.avatar);
     }, [dataDetail]);
-
     return (
         <Form
             style={{ width: '70%' }}
@@ -90,7 +89,12 @@ const UserAdminForm = (props) => {
                         <TextField label={translate.formatMessage(message.username)} name="username" />
                     </Col>
                     <Col span={12}>
-                        <TextField label={translate.formatMessage(message.fullName)} required name="fullName" />
+                        <TextField 
+                            label={translate.formatMessage(message.fullName)} 
+                            validateStatus={isError.fullName ? 'error' : ''}
+                            help={isError.fullName || ''}
+                            error={isError} 
+                            name="fullName" />
                     </Col>
                 </Row>
 
@@ -142,7 +146,13 @@ const UserAdminForm = (props) => {
                         <TextField label={translate.formatMessage(message.email)} name="email" type="email" />
                     </Col>
                     <Col span={12}>
-                        <TextField label={translate.formatMessage(message.phone)} required name="phone" type="number" />
+                        <TextField 
+                            label={translate.formatMessage(message.phone)}
+                            validateStatus={isError.phone ? 'error' : ''}
+                            help={isError.phone || ''}
+                            name="phone" type="number" 
+                        />
+
                     </Col>
                 </Row>
                 <div className="footer-card-form">{actions}</div>

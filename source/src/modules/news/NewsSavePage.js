@@ -47,7 +47,8 @@ const NewsSavePage = () => {
         execute: executeGetCategories,
     } = useFetch(apiConfig.category.autocomplete, {
         immediate: false,
-        mappingData: ({ data }) => data.data.map((item) => ({ value: item.id, label: item.categoryName })),
+        mappingData: ({ data }) => data.data.map((item) => ({ 
+            value: item.id, label: item.categoryName })),
     });
 
     useEffect(() => {

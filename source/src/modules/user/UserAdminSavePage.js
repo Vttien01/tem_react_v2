@@ -17,7 +17,7 @@ const message = defineMessages({
 const UserAdminSavePage = () => {
     const translate = useTranslate();
     const { id } = useParams();
-    const { detail, mixinFuncs, loading, onSave, setIsChangedFormValues, isEditing, title } = useSaveBase({
+    const { detail, mixinFuncs, loading, onSave, setIsChangedFormValues, isEditing, title,errors } = useSaveBase({
         apiConfig: {
             getById: apiConfig.user.getById,
             create: apiConfig.user.create,
@@ -63,6 +63,7 @@ const UserAdminSavePage = () => {
             ]}
         >
             <UserAdminForm
+                isError={errors}
                 setIsChangedFormValues={setIsChangedFormValues}
                 dataDetail={detail ? detail : {}}
                 formId={mixinFuncs.getFormId()}

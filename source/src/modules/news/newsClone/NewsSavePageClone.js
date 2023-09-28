@@ -1,69 +1,70 @@
-import PageWrapper from '@components/common/layout/PageWrapper';
-import { categoryKind } from '@constants';
-import apiConfig from '@constants/apiConfig';
-import useFetch from '@hooks/useFetch';
-import useSaveBase from '@hooks/useSaveBase';
 import React, { useEffect } from 'react';
+import NewsForm from '../NewsForm';
+import PageWrapper from '@components/common/layout/PageWrapper';
 import { FormattedMessage, defineMessages } from 'react-intl';
-import NewsForm from './NewsForm';
-import routes from './routes';
+import routes from '../routes';
+import apiConfig from '@constants/apiConfig';
 import useTranslate from '@hooks/useTranslate';
+import useFetch from '@hooks/useFetch';
+import { categoryKind } from '@constants';
+import useSaveBase from '@hooks/useSaveBase';
 
-const message = defineMessages({
-    objectName: 'news',
+const message=defineMessages({
+    objectName: 'News Clone'
 });
 
-const NewsSavePage = () => {
+function NewsSavePageClone() {
     const translate = useTranslate();
-    const { detail, mixinFuncs, loading, setIsChangedFormValues, isEditing, title } = useSaveBase({
+    const {detail, loading, mixinFuncs,setIsChangedFormValues, isEditing,title}=useSaveBase({
         apiConfig: {
             getById: apiConfig.news.getById,
             create: apiConfig.news.create,
             update: apiConfig.news.update,
         },
         options: {
-            getListUrl: routes.newsListPageDemo.path,
-            objectName: translate.formatMessage(message.objectName),
+            getListUrl: routes.newsListPageClone.path,
+            objectName: translate.formatMessage(message.objectName)
         },
-        override: (funcs) => {
+        override:(funcs) => {
             funcs.prepareUpdateData = (data) => {
-                return {
+                return{
                     ...data,
-                    id: detail.id,
+                    id: detail.id
                 };
             };
             funcs.prepareCreateData = (data) => {
                 return {
                     ...data,
-                    kind: categoryKind.news,
+                    kind: categoryKind. news,
                 };
             };
-        },
+        }
     });
 
-    const {
+    const{
         data: categories,
         loading: getCategoriesLoading,
         execute: executeGetCategories,
-    } = useFetch(apiConfig.category.autocomplete, {
+    } = useFetch(apiConfig.category.autocomplete,{
         immediate: false,
-        mappingData: ({ data }) => data.data.map((item) => ({ value: item.id, label: item.categoryName })),
+        mappingData: ({data}) => data.data.map((item) => ({
+            value: item.id, label: item.categoryName
+        }))
     });
 
     useEffect(() => {
         executeGetCategories({
-            params: {
+            params:{
                 kind: categoryKind.news,
             },
         });
     }, []);
-
-    return (
-        <PageWrapper
-            loading={loading || getCategoriesLoading}
+    return ( 
+        <PageWrapper 
+            loading= {loading || getCategoriesLoading}
             routes={[
                 { breadcrumbName: <FormattedMessage defaultMessage="Home" /> },
-                { breadcrumbName: <FormattedMessage defaultMessage="News" />, path: routes.newsListPage.path },
+                { breadcrumbName: <FormattedMessage defaultMessage="News Clone" />, path: routes.newsListPageClone.path },
                 { breadcrumbName: title },
             ]}
             title={title}
@@ -79,6 +80,6 @@ const NewsSavePage = () => {
             />
         </PageWrapper>
     );
-};
+}
 
-export default NewsSavePage;
+export default NewsSavePageClone;

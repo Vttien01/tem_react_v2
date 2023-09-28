@@ -1,11 +1,13 @@
 import React from 'react';
 
 import { accessRouteTypeEnum } from '@constants';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 
 import routes from '.';
 import PublicLayout from '@modules/main/PublicLayout';
 import MainLayout from '@modules/main/MainLayout';
+import HasPermission from '@components/common/elements/HasPermission';
+import PageUnauthorized from '@components/common/page/Unauthorized';
 
 const ValidateAccess = ({
     authRequire,
@@ -14,9 +16,13 @@ const ValidateAccess = ({
     isAuthenticated,
     profile,
     layout,
+    permissions: routePermissions,
+    onValidatePermissions,
+    path,
+    separate,
 }) => {
     const location = useLocation();
-
+    const { id } = useParams();
     const getRedirect = (authRequire) => {
         if (authRequire === accessRouteTypeEnum.NOT_LOGIN && isAuthenticated) {
             return routes.adminsListPage.path;
@@ -38,13 +44,20 @@ const ValidateAccess = ({
     }
 
     // currently, only support custom layout for authRequire route
-    const Layout = authRequire ? (layout || MainLayout) : PublicLayout;
-
+    const Layout = authRequire ? layout || MainLayout : PublicLayout;
     return (
         <Layout>
-            <Component {...(componentProps || {})}>
-                <Outlet />
-            </Component>
+            <HasPermission
+                onValidate={onValidatePermissions}
+                requiredPermissions={routePermissions}
+                path={{ name: path, type: id === 'create' ? 'create' : 'update' }}
+                separate={separate}
+                fallback={<PageUnauthorized />}
+            >
+                <Component {...(componentProps || {})}>
+                    <Outlet />
+                </Component>
+            </HasPermission>
         </Layout>
     );
 };

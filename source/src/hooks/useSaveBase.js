@@ -8,6 +8,8 @@ import { showErrorMessage } from '@services/notifyService';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import useNotification from './useNotification';
+import { useDispatch } from 'react-redux';
+import { appActions } from '@store/actions';
 
 const message = defineMessages({
     createSuccess: 'Create {objectName} success',
@@ -31,11 +33,13 @@ const useSaveBase = ({
     },
     override,
 }) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const params = useParams();
     const location = useLocation();
     const { params: queryParams, setQueryParams } = useQueryParams();
     const [detail, setDetail] = useState({});
+    const [errors, setErrors] = useState({});
     const [detailId, setDetailId] = useState(params.id);
     const [isSubmitting, setSubmit] = useState(false);
     const [isChanged, setChange] = useState(false);
@@ -85,9 +89,12 @@ const useSaveBase = ({
     const onBack = () => {
         const doBack = () => {
             if (location?.state?.prevPath === options.getListUrl) {
-                navigate(-1);
-            } else {
+                navigate(location.state.prevPath+location.search);
+                console.log("doBack 1 "+JSON.stringify(location));
+            } 
+            else {
                 navigate(options.getListUrl);
+                console.log("doBack 2");
             }
         };
 
@@ -126,6 +133,7 @@ const useSaveBase = ({
     };
 
     const onSave = (values) => {
+        dispatch(appActions.saveData({ key: null, data: null }));
         setSubmit(true);
         if (isEditing) {
             executeUpdate({
@@ -143,6 +151,8 @@ const useSaveBase = ({
     };
 
     const onSaveCompleted = (responseData) => {
+        console.log(responseData);
+
         setSubmit(false);
         if (responseData?.data?.errors?.length) {
             mixinFuncs.onSaveError();
@@ -187,6 +197,14 @@ const useSaveBase = ({
     };
 
     const onSaveError = (err) => {
+        const { status, data } = err.response;
+  
+        const errors1 = data.data.reduce((acc, error) => {
+            acc[error.field] = error.message;
+            return acc;
+        }, {});
+
+        setErrors(errors1);
         mixinFuncs.handleShowErrorMessage(err, showErrorMessage);
         setSubmit(false);
     };
@@ -271,6 +289,7 @@ const useSaveBase = ({
         isEditing,
         title,
         setEditing,
+        errors,
     };
 };
 

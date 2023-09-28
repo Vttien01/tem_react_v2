@@ -7,6 +7,7 @@ const {
     showAppLoading,
     toggleActionLoading,
     changeLanguage,
+    saveData,
 } = appActions;
 
 const initialState = {
@@ -41,5 +42,6 @@ const appReducer = createReducer(
         },
     },
 );
+
 
 export default appReducer;

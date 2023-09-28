@@ -1,0 +1,16 @@
+.page-unauthorized {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        width: 100vh; /* Chiều rộng 100% của viewport */
+        height: 100vh; /* Chiều cao 100% của viewport */
+        object-fit: cover; /* Lấp đầy toàn bộ phần tử <img> */
+    }
+}
