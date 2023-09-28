@@ -27,7 +27,6 @@ const CategoryListPageCommonDemo = ({ routes }) => {
     const queryParameters = new URLSearchParams(window.location.search);
     const parentId = queryParameters.get('parentId');
     const categoryName = queryParameters.get('categoryName');
-    console.log("parentId indexcategoryDemo "+parentId);
     const navigate = useNavigate();
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
         apiConfig: apiConfig.category,
@@ -46,7 +45,7 @@ const CategoryListPageCommonDemo = ({ routes }) => {
             };
             funcs.getCreateLink = () => {
                 if (parentId) {
-                    return `${pagePath}/create?parentId=${parentId}`;
+                    return `${pagePath}/create?parentId=${parentId}&categoryName=${categoryName}`;
                 } else {
                     return `${pagePath}/create`;
                 }

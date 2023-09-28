@@ -13,6 +13,9 @@ import useNotification from './useNotification';
 import SearchForm from '@components/common/form/SearchForm';
 import useAuth from './useAuth';
 import { validatePermission } from '@utils';
+import { useDispatch, useSelector } from 'react-redux';
+import dataSelectors, { selectLoadDataKey, selectLoadDataPagination } from '@selectors/data';
+import { appActions } from '@store/actions';
 
 const tableColumnMessage = defineMessages({
     action: 'Action',
@@ -72,6 +75,10 @@ const useListBase = ({
     const { permissions } = useAuth();
     const navigate = useNavigate();
     const intl = useIntl();
+    const dispatch = useDispatch();
+    const key = useSelector(dataSelectors.selectLoadDataKey);
+    const paginationReducer = useSelector(dataSelectors.selectLoadDataPagination);
+    const dataReducer = useSelector(dataSelectors.selectLoadData);
 
     const queryFilter = useMemo(() => deserializeParams(queryParams), [queryParams]);
 
@@ -93,6 +100,9 @@ const useListBase = ({
     const onCompletedGetList = (response) => {
         const { data, total } = mixinFuncs.mappingData(response);
 
+        dispatch(appActions.saveData({ key: location.href, data: data, total: total}));
+
+        // Cập nhật state nếu cần
         setData(data);
         setPagination((p) => ({ ...p, total }));
     };
@@ -101,14 +111,21 @@ const useListBase = ({
         return {};
     };
 
-    const handleFetchList = (params) => {
+    const handleFetchList = (   params) => {
+        if (location.href === key) {
+            setData(dataReducer);
+            setPagination((p) => ({ ...p, total: paginationReducer }));
+            console.log("pagination: test2 "+paginationReducer);
+            return;
+        }
         if (!apiConfig.getList) throw new Error('apiConfig.getList is not defined');
-        setLoading(true);
+        // setLoading(true);
         executeGetList({
             pathParams: mixinFuncs.prepareGetListPathParams(),
             params,
             onCompleted: (response) => {
                 mixinFuncs.onCompletedGetList(response);
+                console.log("apiconfig.getlist: "+222222222);
                 setLoading(false);
             },
             onError: (error) => {
@@ -132,7 +149,7 @@ const useListBase = ({
     const getList = () => {
         const params = mixinFuncs.prepareGetListParams(queryFilter);
 
-        mixinFuncs.handleFetchList({ ...params });
+        mixinFuncs.handleFetchList({ ...params});
     };
 
     const changeFilter = (filter) => {
@@ -161,6 +178,7 @@ const useListBase = ({
 
     const handleDeleteItem = (id) => {
         setLoading(true);
+        // const isDelete =true;
         executeDelete({
             pathParams: { id },
             onCompleted: (response) => {
@@ -227,10 +245,9 @@ const useListBase = ({
     };
 
     const actionColumnButtons = (additionalButtons = {}) => ({
-        delete: ({ id, buttonProps }) => {
+        delete: ({ id, buttonProps}) => {
             if (!options?.excludePermissions?.delete && !mixinFuncs.hasPermission(apiConfig.delete?.baseURL))
                 return null;
-
             return (
                 <Button
                     {...buttonProps}
@@ -273,7 +290,7 @@ const useListBase = ({
                     onClick={(e) => {
                         e.stopPropagation();
                         navigate(mixinFuncs.getItemDetailLink(dataRow), {
-                            state: { action: 'edit', prevPath: location.pathname },
+                            state: { action: 'edit', prevPath: location.pathname, data:location.data },
                         });
                     }}
                     type="link"
