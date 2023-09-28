@@ -103,7 +103,10 @@ const useListBase = ({
         dispatch(appActions.saveData({ key: location.href, data: data, total: total}));
 
         // Cập nhật state nếu cần
-        setData(data);
+        if (location.data==null){
+            setData(data);
+        }
+        else {setData(location.data);}
         setPagination((p) => ({ ...p, total }));
     };
 
@@ -112,14 +115,14 @@ const useListBase = ({
     };
 
     const handleFetchList = (   params) => {
-        if (location.href === key) {
+        if (location.href === key&&location.data===null) {
             setData(dataReducer);
             setPagination((p) => ({ ...p, total: paginationReducer }));
             console.log("pagination: test2 "+paginationReducer);
             return;
         }
         if (!apiConfig.getList) throw new Error('apiConfig.getList is not defined');
-        // setLoading(true);
+        setLoading(true);
         executeGetList({
             pathParams: mixinFuncs.prepareGetListPathParams(),
             params,
